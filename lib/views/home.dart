@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:trash_panda/views/splash.dart';
-import 'package:trash_panda/views/login.dart';
-import 'package:trash_panda/views/register.dart';
+import "package:trash_panda/views/Recent_all.dart";
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -356,7 +354,7 @@ class HomePage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SignUp()),
+                                      builder: (context) => RecentActivities()),
                                 );
                               },
                               child: Text(
