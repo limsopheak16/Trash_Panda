@@ -26,12 +26,12 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:trash_panda/views/home.dart';
 import 'package:trash_panda/views/splash.dart';
 import 'package:trash_panda/views/login.dart';
 import 'package:trash_panda/views/register.dart';
+import "package:trash_panda/views/Recent_all.dart";
 
 void main() {
   runApp(const MyApp());
@@ -51,6 +51,8 @@ class MyApp extends StatelessWidget {
         '/splash': (context) => Splash(),   
         '/login': (context) => Login(),
         '/register': (context) => SignUp(),
+        '/recent': (context) => RecentActivities(),
+
       },
     );
   }
