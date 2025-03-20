@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:trash_panda/views/splash.dart';
+import 'package:trash_panda/views/login.dart';
+import 'package:trash_panda/views/register.dart';
+import 'package:trash_panda/views/schedulePickup.dart';
 import "package:trash_panda/views/Recent_all.dart";
 
 class HomePage extends StatelessWidget {
@@ -320,13 +324,22 @@ class HomePage extends StatelessWidget {
                                         color: Colors.white,
                                       ),
                                       const SizedBox(width: 8),
-                                      const Text(
+                                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SchedulePickup()),
+                                );
+                              },
+                                      child:  Text(
                                         'Redeem Points',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
+                                            ),
                                     ],
                                   ),
                                 ),
