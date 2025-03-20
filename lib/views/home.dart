@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import "package:trash_panda/views/Recent_all.dart";
+import "package:trash_panda/views/history.dart";
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -354,7 +354,7 @@ class HomePage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => RecentActivities()),
+                                      builder: (context) => ScheduledPickupsPage()),
                                 );
                               },
                               child: Text(
