@@ -1,146 +1,5 @@
-// import 'package:flutter/material.dart';
-
-// class SchedulePickup extends StatefulWidget {
-//   const SchedulePickup({super.key});
-
-//   @override
-//   State<SchedulePickup> createState() => _SchedulePickupState();
-// }
-
-// class _SchedulePickupState extends State<SchedulePickup> {
-//   DateTime? selectedDate;
-//   TimeOfDay? selectedTime;
-//   bool isRecurring = false;
-//   String selectedWasteType = "Plastic";
-
-//   void _pickDate() async {
-//     DateTime? date = await showDatePicker(
-//       context: context,
-//       initialDate: DateTime.now(),
-//       firstDate: DateTime(2022),
-//       lastDate: DateTime(2030),
-//     );
-//     if (date != null) {
-//       setState(() {
-//         selectedDate = date;
-//       });
-//     }
-//   }
-
-//   void _pickTime() async {
-//     TimeOfDay? time = await showTimePicker(
-//       context: context,
-//       initialTime: TimeOfDay.now(),
-//     );
-//     if (time != null) {
-//       setState(() {
-//         selectedTime = time;
-//       });
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Schedule Pickup', style: TextStyle(color: Colors.green)),
-//         backgroundColor: Colors.white,
-//         leading: IconButton(
-//           icon: const Icon(Icons.arrow_back, color: Colors.green),
-//           onPressed: () => Navigator.pop(context),
-//         ),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             const Text(
-//               'MARCH 2025',
-//               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-//             ),
-//             const SizedBox(height: 16),
-//             GestureDetector(
-//               onTap: _pickDate,
-//               child: Container(
-//                 child: Image(image: AssetImage('assets/icons/shedule.jpg')),
-//               ),
-//             ),
-//             const SizedBox(height: 16),
-//             const Text('Time', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green)),
-//             GestureDetector(
-//               onTap: _pickTime,
-//               child: Container(
-//                 padding: const EdgeInsets.symmetric(vertical: 12),
-//                 decoration: const BoxDecoration(
-//                   border: Border(bottom: BorderSide(color: Colors.grey)),
-//                 ),
-//                 child: Text(selectedTime == null ? 'Time not set (all day)' : selectedTime!.format(context)),
-//               ),
-//             ),
-//             const SizedBox(height: 16),
-//             const Text('Waste Type', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green)),
-//             Wrap(
-//               spacing: 8,
-//               children: ['Plastic', 'Metal', 'Paper', 'Glass'].map((type) {
-//                 return ChoiceChip(
-//                   label: Text(type),
-//                   selected: selectedWasteType == type,
-//                   onSelected: (selected) {
-//                     setState(() {
-//                       selectedWasteType = type;
-//                     });
-//                   },
-//                 );
-//               }).toList(),
-//             ),
-//             const SizedBox(height: 16),
-//             const Text('Estimate weight/volume', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green)),
-//             const TextField(
-//               decoration: InputDecoration(
-//                 hintText: '5kg/1bag',
-//                 border: UnderlineInputBorder(),
-//               ),
-//             ),
-//             const SizedBox(height: 16),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 const Text('Recurring Pickup', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green)),
-//                 Switch(
-//                   value: isRecurring,
-//                   onChanged: (value) {
-//                     setState(() {
-//                       isRecurring = value;
-//                     });
-//                   },
-//                 ),
-//               ],
-//             ),
-//             const SizedBox(height: 16),
-//             Row(
-//               children: [
-//                 Expanded(
-//                   child: ElevatedButton(
-//                     style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-//                     onPressed: () {},
-//                     child: const Text('Schedule Pickup', style: TextStyle(color: Colors.white)),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-
-
-
 import 'package:flutter/material.dart';
+import 'package:trash_panda/views/rewardScreen.dart';
 
 class SchedulePickup extends StatefulWidget {
   const SchedulePickup({super.key});
@@ -566,6 +425,7 @@ class _SchedulePickupState extends State<SchedulePickup> {
                     onChanged: (value) {
                       setState(() {
                         isRecurring = value;
+                        
                       });
                     },
                     activeColor: Colors.green,
@@ -578,19 +438,24 @@ class _SchedulePickupState extends State<SchedulePickup> {
               
               // History Button
               Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF3A6A47),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF3A6A47),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  onPressed: () {},
-                  child: Text('History', style: TextStyle(color: Colors.white)),
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                 ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RewardScreen()),
+                  );
+                },
+                child: Text('History', style: TextStyle(color: Colors.white)),
               ),
+),
               
               const SizedBox(height: 16),
               
@@ -599,8 +464,11 @@ class _SchedulePickupState extends State<SchedulePickup> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Color(0xFF3A6A47),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 20),
                   ),
                   onPressed: () {},
                   child: Text(
