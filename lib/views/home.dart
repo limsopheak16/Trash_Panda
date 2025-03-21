@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:trash_panda/views/Recent_all.dart';
+import 'package:trash_panda/views/rewardScreen.dart';
+import "package:trash_panda/views/Recent_all.dart";
+import 'package:trash_panda/views/schedulePickup.dart';
 import 'package:trash_panda/views/history.dart';
 import 'package:trash_panda/views/social.dart';
 import 'package:trash_panda/views/profile.dart';
@@ -304,14 +306,14 @@ class HomeContent extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 16),
                         child: Row(
                           children: [
-                            Expanded(
+                          Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  // Handle pickup schedule tap
+                                  // Handle redeem points tap
                                 },
                                 child: Container(
-                                  width: 205, // Set width
-                                  height: 63, // Set height
+                                  width: 205,
+                                  height: 63,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 12),
                                   decoration: BoxDecoration(
@@ -328,13 +330,22 @@ class HomeContent extends StatelessWidget {
                                         color: Colors.white,
                                       ),
                                       const SizedBox(width: 8),
-                                      const Text(
+                                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SchedulePickup()),
+                                );
+                              },
+                                      child:  Text(
                                         'Pickup Schedule',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
+                                            ),
                                     ],
                                   ),
                                 ),
@@ -370,7 +381,7 @@ class HomeContent extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => RecentActivities()),
+                                      builder: (context) => RewardScreen()),
                                 );
                               },
                                       child:  Text(
