@@ -32,6 +32,10 @@ import 'package:trash_panda/views/splash.dart';
 import 'package:trash_panda/views/login.dart';
 import 'package:trash_panda/views/register.dart';
 import "package:trash_panda/views/Recent_all.dart";
+import "package:trash_panda/views/history.dart";
+import "package:trash_panda/views/detailsocial.dart";
+import "package:trash_panda/views/social.dart";
+import "package:trash_panda/views/profile.dart";
 
 void main() {
   runApp(const MyApp());
@@ -52,6 +56,10 @@ class MyApp extends StatelessWidget {
         '/login': (context) => Login(),
         '/register': (context) => SignUp(),
         '/recent': (context) => RecentActivities(),
+        '/history': (context) => ScheduledPickupsPage(),
+        '/detailsocial': (context) => DetailScreen(),
+        '/social': (context) => Social(),
+        '/profile': (context) => Profile(),
 
       },
     );

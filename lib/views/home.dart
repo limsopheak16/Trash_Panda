@@ -1,12 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:trash_panda/views/schedulePickup.dart';
-import "package:trash_panda/views/Recent_all.dart";
+import 'package:trash_panda/views/Recent_all.dart';
+import 'package:trash_panda/views/history.dart';
+import 'package:trash_panda/views/social.dart';
+import 'package:trash_panda/views/profile.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0; // Default tab is Home
+
+  final List<Widget> _pages = [
+    HomeContent(),
+    ScheduledPickupsPage(),
+    Social(),
+    Profile(),
+  ];
 
   @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.green,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Social'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+      ),
+    );
+  }
+}
+
+// 🔹 This is the Home Page content
+class HomeContent extends StatelessWidget {
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -326,7 +370,7 @@ class HomePage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SchedulePickup()),
+                                      builder: (context) => RecentActivities()),
                                 );
                               },
                                       child:  Text(
@@ -429,29 +473,7 @@ class HomePage extends StatelessWidget {
             ),
 
             // Bottom Navigation
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: const Offset(0, -1),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _buildNavItem(Icons.home, 'Home', true),
-                  _buildNavItem(Icons.history, 'History', false),
-                  _buildNavItem(Icons.people, 'Social', false),
-                  _buildNavItem(Icons.person, 'Profile', false),
-                ],
-              ),
-            ),
+        
           ],
         ),
       ),
@@ -536,32 +558,6 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, bool isActive) {
-    return GestureDetector(
-      onTap: () {
-        // Handle navigation tap
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: isActive ? const Color(0xFF80AF81) : Colors.grey,
-            size: 24,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: isActive ? const Color(0xFF80AF81) : Colors.grey,
-              fontSize: 12,
-            ),
           ),
         ],
       ),
