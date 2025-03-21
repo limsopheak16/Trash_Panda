@@ -31,7 +31,7 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 40),
           _buildOptions(),
           const Spacer(),
-          _buildBottomNavigation(),
+          // _buildBottomNavigation(),
         ],
       ),
     );
@@ -150,55 +150,5 @@ Widget _buildTopIcons() {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isActive) {
-    return GestureDetector(
-      onTap: () {
-        // Handle navigation tap
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: isActive ? const Color(0xFF80AF81) : Colors.grey,
-            size: 24,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: isActive ? const Color(0xFF80AF81) : Colors.grey,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildBottomNavigation() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, -1),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(Icons.home, 'Home', false),
-          _buildNavItem(Icons.history, 'History', false),
-          _buildNavItem(Icons.people, 'Social', false),
-          _buildNavItem(Icons.person, 'Profile', true),
-        ],
-      ),
-    );
-  }
 }
