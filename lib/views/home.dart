@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:trash_panda/views/splash.dart';
-import 'package:trash_panda/views/login.dart';
-import 'package:trash_panda/views/register.dart';
 import 'package:trash_panda/views/schedulePickup.dart';
 import "package:trash_panda/views/Recent_all.dart";
 
