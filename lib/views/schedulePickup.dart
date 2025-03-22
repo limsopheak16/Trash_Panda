@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trash_panda/views/rewardScreen.dart';
+import 'package:trash_panda/views/history.dart';
 
 class SchedulePickup extends StatefulWidget {
   const SchedulePickup({super.key});
@@ -450,7 +450,7 @@ class _SchedulePickupState extends State<SchedulePickup> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => RewardScreen()),
+                    MaterialPageRoute(builder: (context) => ScheduledPickupsPage()),
                   );
                 },
                 child: Text('History', style: TextStyle(color: Colors.white)),
