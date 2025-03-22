@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:trash_panda/models/scheduledHistory_model.dart';
+import 'package:trash_panda/controllers/shcheduleHistory_controller.dart';
 
 class ScheduledPickupsPage extends StatelessWidget {
   const ScheduledPickupsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ShchedulehistoryController controller = ShchedulehistoryController();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -15,8 +19,8 @@ class ScheduledPickupsPage extends StatelessWidget {
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
+              children: const [
+                Text(
                   'Hello, Pheak',
                   style: TextStyle(
                     fontSize: 18,
@@ -64,7 +68,7 @@ class ScheduledPickupsPage extends StatelessWidget {
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -80,72 +84,39 @@ class ScheduledPickupsPage extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: ListView(
-                children: [
-                  buildPickupCard(
-                    date: 'Mar 19, 2025',
-                    time: '09:00 AM',
-                    materials: ['Plastic', 'Metal'],
-                    weight: '2.5 kg',
-                    status: 'Scheduled',
-                    statusColor: Colors.green,
-                    showCancelButton: true,
-                  ),
-                  buildPickupCard(
-                    date: 'Mar 12, 2025',
-                    time: '09:00 AM',
-                    materials: ['Paper', 'Metal'],
-                    weight: '3.5 kg',
-                    status: 'Completed',
-                    statusColor: Colors.grey,
-                    showCancelButton: false,
-                  ),
-                  buildPickupCard(
-                    date: 'Mar 12, 2025',
-                    time: '09:00 AM',
-                    materials: ['Paper', 'Metal'],
-                    weight: '3.5 kg',
-                    status: 'Completed',
-                    statusColor: Colors.grey,
-                    showCancelButton: false,
-                  ),
-                  buildPickupCard(
-                    date: 'Mar 12, 2025',
-                    time: '09:00 AM',
-                    materials: ['Paper', 'Metal'],
-                    weight: '3.5 kg',
-                    status: 'Completed',
-                    statusColor: Colors.grey,
-                    showCancelButton: false,
-                  ),
-                  buildPickupCard(
-                    date: 'Mar 12, 2025',
-                    time: '09:00 AM',
-                    materials: ['Paper', 'Metal'],
-                    weight: '3.5 kg',
-                    status: 'Completed',
-                    statusColor: Colors.grey,
-                    showCancelButton: false,
-                  ),
-                  buildPickupCard(
-                    date: 'Mar 12, 2025',
-                    time: '09:00 AM',
-                    materials: ['Paper', 'Metal'],
-                    weight: '3.5 kg',
-                    status: 'Completed',
-                    statusColor: Colors.grey,
-                    showCancelButton: false,
-                  ),
-                  buildPickupCard(
-                    date: 'Mar 12, 2025',
-                    time: '09:00 AM',
-                    materials: ['Paper', 'Metal'],
-                    weight: '3.5 kg',
-                    status: 'Completed',
-                    statusColor: Colors.grey,
-                    showCancelButton: false,
-                  ),
-                ],
+              child: FutureBuilder<List<ScheduledhistoryModel>>(
+                future: controller.fetchScheduledHistory(), // Fetch the scheduled history
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No scheduled pickups found.'));
+                  }
+
+                  final scheduledHistory = snapshot.data!;
+
+                  return ListView.builder(
+                    itemCount: scheduledHistory.length,
+                    itemBuilder: (context, index) {
+                      final pickup = scheduledHistory[index];
+                      return buildPickupCard(
+                        date: pickup.date.toIso8601String(), // Adjust this for date
+                        time: pickup.date.toIso8601String(), // Adjust this for time
+                        materials: pickup.wasteTypes.split(','), // Assuming wasteTypes are comma-separated
+                        weight: 'N/A', // Adjust this if weight data is available
+                        status: pickup.status,
+                        statusColor: pickup.status == 'Scheduled' ? Colors.green : Colors.grey,
+                        showCancelButton: pickup.status == 'Scheduled',
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
