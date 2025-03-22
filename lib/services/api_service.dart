@@ -4,6 +4,7 @@ import 'package:trash_panda/models/scheduledHistory_model.dart';
 import 'package:trash_panda/models/user_model.dart'; // Ensure this import exists
 import 'package:trash_panda/models/activity_model.dart'; // Ensure this import exists
 import 'package:trash_panda/services/storage_service.dart';
+import 'package:trash_panda/models/user_model.dart';
 
 class ApiService {
   static const String baseUrl = 'https://pay1.jetdev.life';
@@ -70,6 +71,5 @@ class ApiService {
     return [];
   }
 
-   
-
 }
+

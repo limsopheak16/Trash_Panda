@@ -1,260 +1,46 @@
-// // import 'package:flutter/material.dart';
-// // import 'package:trash_panda/views/login.dart';
-
-// // class SignUp extends StatelessWidget {
-// //   const SignUp({super.key});
-
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return Scaffold(
-// //       backgroundColor: Colors.white,
-// //       body: Stack(
-// //         children: [
-// //           Positioned(
-// //             top: -200,
-// //             right: -200,
-// //             child: Container(
-// //               width: 400,
-// //               height: 400,
-// //               decoration: const BoxDecoration(
-// //                 color: Color(0xFF80AF81),
-// //                 shape: BoxShape.circle,
-// //               ),
-// //             ),
-// //           ),
-// //           Positioned(
-// //             bottom: -200,
-// //             left: -200,
-// //             child: Container(
-// //               width: 400,
-// //               height: 400,
-// //               decoration: const BoxDecoration(
-// //                 color: Color(0xFF80AF81),
-// //                 shape: BoxShape.circle,
-// //               ),
-// //             ),
-// //           ),
-// //           SafeArea(
-// //             child: Center(
-// //               child: Padding(
-// //                 padding: const EdgeInsets.symmetric(horizontal: 40),
-// //                 child: Column(
-// //                   mainAxisAlignment: MainAxisAlignment.center,
-// //                   crossAxisAlignment: CrossAxisAlignment.start,
-// //                   children: [
-// //                     const Text(
-// //                       "Sign up",
-// //                       style: TextStyle(
-// //                         fontSize: 30,
-// //                         fontWeight: FontWeight.bold,
-// //                         color: Color(0xFF058B09),
-// //                       ),
-// //                     ),
-// //                     const SizedBox(height: 15),
-
-// //                     _buildTextField("Email"),
-// //                     const SizedBox(height: 15),
-// //                     _buildTextField("Password", isPassword: true),
-// //                     const SizedBox(height: 15),
-// //                     _buildTextField("Location"),
-// //                     const SizedBox(height: 30),
-
-// //                     ElevatedButton(
-// //                       style: ElevatedButton.styleFrom(
-// //                         backgroundColor: const Color(0xFF416944),
-// //                         shape: RoundedRectangleBorder(
-// //                           borderRadius: BorderRadius.circular(20),
-// //                         ),
-// //                         minimumSize: const Size(double.infinity, 50),
-// //                       ),
-// //                       onPressed: () {
-// //                         Navigator.pushReplacement(
-// //                           context,
-// //                           MaterialPageRoute(builder: (context) =>  Login()),
-// //                         );
-// //                       },
-// //                       child: const Text(
-// //                         "Sign Up",
-// //                         style: TextStyle(fontSize: 20, color: Colors.white),
-// //                       ),
-// //                     ),
-// //                   ],
-// //                 ),
-// //               ),
-// //             ),
-// //           ),
-// //         ],
-// //       ),
-// //     );
-// //   }
-
-// //   Widget _buildTextField(String hint, {bool isPassword = false}) {
-// //     return TextField(
-// //       obscureText: isPassword,
-// //       decoration: InputDecoration(
-// //         hintText: hint,
-// //         hintStyle: const TextStyle(fontSize: 18, color: Color(0xFF6FAD67)),
-// //         filled: true,
-// //         fillColor: Colors.white,
-// //         enabledBorder: OutlineInputBorder(
-// //           borderRadius: BorderRadius.circular(16),
-// //           borderSide: const BorderSide(color: Color(0xFF416944), width: 1),
-// //         ),
-// //         focusedBorder: OutlineInputBorder(
-// //           borderRadius: BorderRadius.circular(16),
-// //           borderSide: const BorderSide(color: Color(0xFF416944), width: 1.5),
-// //         ),
-// //       ),
-// //     );
-// //   }
-// // }
-
-
 // import 'package:flutter/material.dart';
-// import 'package:trash_panda/views/login.dart';
-
-// class SignUp extends StatelessWidget {
-//   const SignUp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       body: Stack(
-//         children: [
-//           Positioned(
-//             top: -200,
-//             right: -200,
-//             child: Container(
-//               width: 400,
-//               height: 400,
-//               decoration: const BoxDecoration(
-//                 color: Color(0xFF80AF81),
-//                 shape: BoxShape.circle,
-//               ),
-//             ),
-//           ),
-//           Positioned(
-//             bottom: -200,
-//             left: -200,
-//             child: Container(
-//               width: 400,
-//               height: 400,
-//               decoration: const BoxDecoration(
-//                 color: Color(0xFF80AF81),
-//                 shape: BoxShape.circle,
-//               ),
-//             ),
-//           ),
-//           SafeArea(
-//             child: Center(
-//               child: Padding(
-//                 padding: const EdgeInsets.symmetric(horizontal: 40),
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     const Text(
-//                       "Sign up",
-//                       style: TextStyle(
-//                         fontSize: 30,
-//                         fontWeight: FontWeight.bold,
-//                         color: Color(0xFF058B09),
-//                       ),
-//                     ),
-//                     const SizedBox(height: 15),
-
-//                     _buildTextField("Username"),
-//                     const SizedBox(height: 15),
-//                     _buildTextField("Email"),
-//                     const SizedBox(height: 15),
-//                     _buildTextField("Password", isPassword: true),
-//                     const SizedBox(height: 15),
-//                     _buildTextField("Location"),
-//                     const SizedBox(height: 15),
-//                     _buildTextField("Image URL"),
-//                     const SizedBox(height: 30),
-
-//                     ElevatedButton(
-//                       style: ElevatedButton.styleFrom(
-//                         backgroundColor: const Color(0xFF416944),
-//                         shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(20),
-//                         ),
-//                         minimumSize: const Size(double.infinity, 50),
-//                       ),
-//                       onPressed: () {
-//                         Navigator.pushReplacement(
-//                           context,
-//                           MaterialPageRoute(builder: (context) =>  Login()),
-//                         );
-//                       },
-//                       child: const Text(
-//                         "Sign Up",
-//                         style: TextStyle(fontSize: 20, color: Colors.white),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _buildTextField(String hint, {bool isPassword = false}) {
-//     return TextField(
-//       obscureText: isPassword,
-//       decoration: InputDecoration(
-//         hintText: hint,
-//         hintStyle: const TextStyle(fontSize: 18, color: Color(0xFF6FAD67)),
-//         filled: true,
-//         fillColor: Colors.white,
-//         enabledBorder: OutlineInputBorder(
-//           borderRadius: BorderRadius.circular(16),
-//           borderSide: const BorderSide(color: Color(0xFF416944), width: 1),
-//         ),
-//         focusedBorder: OutlineInputBorder(
-//           borderRadius: BorderRadius.circular(16),
-//           borderSide: const BorderSide(color: Color(0xFF416944), width: 1.5),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-
-      
-//       import 'package:flutter/material.dart';
+// import 'package:image_picker/image_picker.dart';
 // import 'package:trash_panda/views/login.dart';
 // import 'package:trash_panda/controllers/user_controller.dart';
 // import 'package:trash_panda/models/user_model.dart';
+// import 'dart:io';
 
-// class SignUp extends StatelessWidget {
+// class SignUp extends StatefulWidget {
+//   SignUp({super.key});
+
+//   @override
+//   _SignUpState createState() => _SignUpState();
+// }
+
+// class _SignUpState extends State<SignUp> {
 //   final TextEditingController _usernameController = TextEditingController();
 //   final TextEditingController _emailController = TextEditingController();
 //   final TextEditingController _passwordController = TextEditingController();
-//   final TextEditingController _locationController = TextEditingController();
 //   final UserController _userController = UserController();
+//   File? _image;
 
-//   SignUp({super.key});
+//   Future<void> _pickImage() async {
+//     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+//     if (pickedFile != null) {
+//       setState(() {
+//         _image = File(pickedFile.path);
+//       });
+//     }
+//   }
 
 //   void _register(BuildContext context) async {
 //     final user = User(
 //       userName: _usernameController.text,
 //       email: _emailController.text,
 //       password: _passwordController.text,
-//       profileImageUrl: '',
+//       profileImageUrl: _image?.path ?? '',
 //     );
 
 //     final success = await _userController.register(
 //       user.userName,
 //       user.email,
 //       user.password ?? '',
-//       _locationController.text,
+//       user.profileImageUrl,
 //     );
 
 //     if (success) {
@@ -322,7 +108,26 @@
 //                     const SizedBox(height: 15),
 //                     _buildTextField("Password", controller: _passwordController, isPassword: true),
 //                     const SizedBox(height: 15),
-//                     _buildTextField("Location", controller: _locationController),
+
+//                     // Profile Image Selection Styled as a Box
+//                     GestureDetector(
+//                       onTap: _pickImage,
+//                       child: Container(
+//                         height: 50,
+//                         alignment: Alignment.centerLeft,
+//                         padding: const EdgeInsets.symmetric(horizontal: 15),
+//                         decoration: BoxDecoration(
+//                           color: Colors.white,
+//                           borderRadius: BorderRadius.circular(16),
+//                           border: Border.all(color: const Color(0xFF416944), width: 1),
+//                         ),
+//                         child: Text(
+//                           _image == null ? "Select Profile Image" : "Image Selected",
+//                           style: const TextStyle(fontSize: 18, color: Color(0xFF6FAD67)),
+//                         ),
+//                       ),
+//                     ),
+
 //                     const SizedBox(height: 30),
 //                     ElevatedButton(
 //                       style: ElevatedButton.styleFrom(
@@ -370,16 +175,17 @@
 //   }
 // }
 
+
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:trash_panda/views/login.dart';
+import 'package:trash_panda/bloc/user_bloc.dart';
 import 'package:trash_panda/controllers/user_controller.dart';
 import 'package:trash_panda/models/user_model.dart';
-import 'dart:io';
+import 'package:trash_panda/views/login.dart';
 
 class SignUp extends StatefulWidget {
-  SignUp({super.key});
-
   @override
   _SignUpState createState() => _SignUpState();
 }
@@ -390,6 +196,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _passwordController = TextEditingController();
   final UserController _userController = UserController();
   File? _image;
+  bool _isLoading = false;
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -401,28 +208,48 @@ class _SignUpState extends State<SignUp> {
   }
 
   void _register(BuildContext context) async {
-    final user = User(
-      userName: _usernameController.text,
-      email: _emailController.text,
-      password: _passwordController.text,
-      profileImageUrl: _image?.path ?? '',
-    );
+    if (_usernameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('All fields are required!')),
+      );
+      return;
+    }
+
+    final userBloc = BlocProvider.of<UserBloc>(context);
+
+    setState(() {
+      _isLoading = true;
+    });
 
     final success = await _userController.register(
-      user.userName,
-      user.email,
-      user.password ?? '',
-      user.profileImageUrl,
+      _emailController.text,
+      _image?.path ?? '',
+      _usernameController.text,
+      _passwordController.text,
     );
 
+    setState(() {
+      _isLoading = false;
+    });
+
     if (success) {
+      final user = User(
+        userName: _usernameController.text,
+        email: _emailController.text,
+        profileImageUrl: _image?.path ?? '',
+      );
+
+      userBloc.add(SetUserEvent(user));
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Login()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registration failed')),
+        const SnackBar(content: Text('Registration failed. Please try again.')),
       );
     }
   }
@@ -433,30 +260,7 @@ class _SignUpState extends State<SignUp> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Positioned(
-            top: -200,
-            right: -200,
-            child: Container(
-              width: 400,
-              height: 400,
-              decoration: const BoxDecoration(
-                color: Color(0xFF80AF81),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -200,
-            left: -200,
-            child: Container(
-              width: 400,
-              height: 400,
-              decoration: const BoxDecoration(
-                color: Color(0xFF80AF81),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
+          _buildBackgroundCircles(),
           SafeArea(
             child: Center(
               child: Padding(
@@ -480,41 +284,9 @@ class _SignUpState extends State<SignUp> {
                     const SizedBox(height: 15),
                     _buildTextField("Password", controller: _passwordController, isPassword: true),
                     const SizedBox(height: 15),
-
-                    // Profile Image Selection Styled as a Box
-                    GestureDetector(
-                      onTap: _pickImage,
-                      child: Container(
-                        height: 50,
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFF416944), width: 1),
-                        ),
-                        child: Text(
-                          _image == null ? "Select Profile Image" : "Image Selected",
-                          style: const TextStyle(fontSize: 18, color: Color(0xFF6FAD67)),
-                        ),
-                      ),
-                    ),
-
+                    _buildImagePicker(),
                     const SizedBox(height: 30),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF416944),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
-                      onPressed: () => _register(context),
-                      child: const Text(
-                        "Sign Up",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
-                    ),
+                    _buildSignUpButton(context),
                   ],
                 ),
               ),
@@ -522,6 +294,37 @@ class _SignUpState extends State<SignUp> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBackgroundCircles() {
+    return Stack(
+      children: [
+        Positioned(
+          top: -200,
+          right: -200,
+          child: Container(
+            width: 400,
+            height: 400,
+            decoration: const BoxDecoration(
+              color: Color(0xFF80AF81),
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: -200,
+          left: -200,
+          child: Container(
+            width: 400,
+            height: 400,
+            decoration: const BoxDecoration(
+              color: Color(0xFF80AF81),
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -543,6 +346,45 @@ class _SignUpState extends State<SignUp> {
           borderSide: const BorderSide(color: Color(0xFF416944), width: 1.5),
         ),
       ),
+    );
+  }
+
+  Widget _buildImagePicker() {
+    return GestureDetector(
+      onTap: _pickImage,
+      child: Container(
+        height: 50,
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFF416944), width: 1),
+        ),
+        child: Text(
+          _image == null ? "Select Profile Image" : "Image Selected",
+          style: const TextStyle(fontSize: 18, color: Color(0xFF6FAD67)),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignUpButton(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF416944),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        minimumSize: const Size(double.infinity, 50),
+      ),
+      onPressed: _isLoading ? null : () => _register(context),
+      child: _isLoading
+          ? const CircularProgressIndicator(color: Colors.white)
+          : const Text(
+              "Sign Up",
+              style: TextStyle(fontSize: 20, color: Colors.white),
+            ),
     );
   }
 }
