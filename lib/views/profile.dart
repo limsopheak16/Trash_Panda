@@ -1,93 +1,80 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const Profile());
-}
+import 'package:provider/provider.dart';
+import 'package:trash_panda/controllers/profile_controller.dart';
 
 class Profile extends StatelessWidget {
-  const Profile({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ProfileScreen(),
+    return ChangeNotifierProvider(
+      create: (context) => ProfileController()..loadProfile(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Consumer<ProfileController>(
+          builder: (context, controller, child) {
+            if (controller.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (controller.profile == null) {
+              return const Center(child: Text("Failed to load profile"));
+            }
+
+            final profile = controller.profile!;
+            return Column(
+              children: [
+                const SizedBox(height: 50),
+                _buildTopIcons(),
+                _buildHeader(profile.userName, profile.email, profile.profileImageUrl),
+                const SizedBox(height: 40),
+                _buildStats(),
+                const SizedBox(height: 40),
+                _buildOptions(),
+                const Spacer(),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
-}
 
-class ProfileScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
+  Widget _buildTopIcons() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          const SizedBox(height: 50),
-          _buildTopIcons(),
-          _buildHeader(),
-          const SizedBox(height: 40),
-          _buildStats(),
-          const SizedBox(height: 40),
-          _buildOptions(),
-          const Spacer(),
-          // _buildBottomNavigation(),
+          CircleAvatar(
+            backgroundColor: Colors.green.shade100,
+            radius: 25,
+            child: GestureDetector(
+              onTap: () {},
+              child: Image.asset('assets/icons/edit.png', width: 28, height: 28),
+            ),
+          ),
+          const SizedBox(width: 15),
+          CircleAvatar(
+            backgroundColor: Colors.red.shade100,
+            radius: 25,
+            child: IconButton(
+              icon: const Icon(Icons.logout, color: Colors.redAccent, size: 28),
+              onPressed: () {},
+            ),
+          ),
         ],
       ),
     );
   }
 
-Widget _buildTopIcons() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        CircleAvatar(
-          backgroundColor: Colors.green.shade100,
-          radius: 25,
-          child: GestureDetector(
-            onTap: () {
-              // Handle tap action
-            },
-            child: Image.asset(
-              'assets/icons/edit.png',
-              width: 28, // Adjust size as needed
-              height: 28,
-            ),
-          ),
-        ),
-        const SizedBox(width: 15),
-        CircleAvatar(
-          backgroundColor: Colors.red.shade100,
-          radius: 25,
-          child: IconButton(
-            icon: Icon(Icons.logout, color: Colors.redAccent, size: 28),
-            onPressed: () {},
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-
-  Widget _buildHeader() {
+  Widget _buildHeader(String name, String email, String imageUrl) {
     return Column(
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           radius: 80,
-          backgroundImage: AssetImage('assets/icons/panda.jpg'),
+          backgroundImage: NetworkImage(imageUrl),
         ),
         const SizedBox(height: 20),
-        const Text(
-          'PHEAK PANDA',
-          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-        ),
-        const Text(
-          'limpreak.panda@gmail.com',
-          style: TextStyle(color: Colors.grey, fontSize: 18),
-        ),
+        Text(name, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+        Text(email, style: const TextStyle(color: Colors.grey, fontSize: 18)),
       ],
     );
   }
@@ -110,22 +97,12 @@ Widget _buildTopIcons() {
     return Container(
       width: 120,
       padding: const EdgeInsets.all(25),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(15),
-      ),
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(15)),
       child: Column(
         children: [
-          Text(
-            value,
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
+          Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 5),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16, color: Colors.black54),
-          ),
+          Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 16, color: Colors.black54)),
         ],
       ),
     );
@@ -149,6 +126,4 @@ Widget _buildTopIcons() {
       trailing: const Icon(Icons.arrow_forward_ios, size: 20),
     );
   }
-
-
 }
