@@ -1,8 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:trash_panda/views/home.dart';
 import 'package:trash_panda/views/register.dart';
+import 'package:trash_panda/controllers/user_controller.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+  const Login({super.key});
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<Login> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final UserController _userController = UserController();
+  bool _isLoading = false;
+
+  void _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+    final user = await _userController.login(username, password);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login failed')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,28 +88,26 @@ class Login extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    'Welcome to Trash Panda',
+                    'Welcome to App Test',
                     style: TextStyle(
                       fontSize: 22,
                       color: Color(0xFF058B09),
                     ),
                   ),
                   const SizedBox(height: 35),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF416944),
-                      ),
+                  const Text(
+                    'Login',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF416944),
                     ),
                   ),
                   const SizedBox(height: 15),
                   TextField(
+                    controller: _usernameController,
                     decoration: InputDecoration(
-                      hintText: 'Email',
+                      hintText: 'Username',
                       hintStyle:
                           TextStyle(fontSize: 18, color: Color(0xFF6FAD67)),
                       border: OutlineInputBorder(
@@ -81,10 +117,11 @@ class Login extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
                   TextField(
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'Password',
-                        hintStyle:
+                      hintStyle:
                           TextStyle(fontSize: 18, color: Color(0xFF6FAD67)),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -114,14 +151,12 @@ class Login extends StatelessWidget {
                             borderRadius: BorderRadius.circular(24)),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomePage()));
-                      },
-                      child: const Text('Login',
-                          style: TextStyle(fontSize: 20, color: Colors.white)),
+                      onPressed: _isLoading ? null : _login,
+                      child: _isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text('Login',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white)),
                     ),
                   ),
                   const SizedBox(height: 30),
