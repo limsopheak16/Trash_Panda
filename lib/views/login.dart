@@ -88,7 +88,7 @@ class _LoginScreenState extends State<Login> {
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    'Welcome to App Test',
+                    'Welcome to Trash Panda',
                     style: TextStyle(
                       fontSize: 22,
                       color: Color(0xFF058B09),
