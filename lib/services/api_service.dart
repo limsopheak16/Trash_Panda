@@ -52,6 +52,23 @@ class ApiService {
     }
     return [];
   }
+  // Fetch User Profile
+  Future<User?> getProfile() async {
+    final token = await _storageService.getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/account/user'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    }
+    return null;
+  }
   // shceduled history
   Future<List<ScheduledhistoryModel>> fetchScheduledHistory({int limit = 20}) async {
     final token = await _storageService.getToken(); // Retrieve token
