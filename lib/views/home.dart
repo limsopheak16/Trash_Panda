@@ -361,7 +361,7 @@ class _HomeContentState extends State<HomeContent> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SchedulePickup()),
+                                      builder: (context) => SchedulePickupScreen()),
                                 );
                               },
                                       child:  Text(
