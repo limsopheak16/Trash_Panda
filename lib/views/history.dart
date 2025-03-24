@@ -7,7 +7,7 @@ class ScheduledPickupsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ShchedulehistoryController controller = ShchedulehistoryController();
+    final ScheduleHistoryController controller = ScheduleHistoryController();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -106,8 +106,8 @@ class ScheduledPickupsPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final pickup = scheduledHistory[index];
                       return buildPickupCard(
-                        date: pickup.date.toIso8601String(), // Adjust this for date
-                        time: pickup.date.toIso8601String(), // Adjust this for time
+                        date: pickup.date, // Adjust this for date
+                        time: pickup.date, // Adjust this for time
                         materials: pickup.wasteTypes.split(','), // Assuming wasteTypes are comma-separated
                         weight: 'N/A', // Adjust this if weight data is available
                         status: pickup.status,
