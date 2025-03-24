@@ -1,490 +1,256 @@
 import 'package:flutter/material.dart';
+import 'package:trash_panda/controllers/pickup_controller.dart';
 import 'package:trash_panda/views/history.dart';
+import 'package:table_calendar/table_calendar.dart'; // Add this for the calendar
 
-class SchedulePickup extends StatefulWidget {
-  const SchedulePickup({super.key});
-
+class SchedulePickupScreen extends StatefulWidget {
   @override
-  State<SchedulePickup> createState() => _SchedulePickupState();
+  _SchedulePickupScreenState createState() => _SchedulePickupScreenState();
 }
 
-class _SchedulePickupState extends State<SchedulePickup> {
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
-  bool isRecurring = false;
-  String selectedWasteType = "Plastic";
-  final TextEditingController weightController = TextEditingController(text: "5kg/1bag");
-  
-  // Current displayed month and year for the calendar
-  DateTime currentDisplayMonth = DateTime(2025, 3);
-  
-  void _pickTime() async {
-    TimeOfDay? time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (time != null) {
-      setState(() {
-        selectedTime = time;
-      });
-    }
-  }
+class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
+  DateTime selectedDate = DateTime.now();
+  DateTime focusedDate = DateTime.now();
+  List<String> selectedWasteTypes = [];
+  String estimatedWeight = "5kg/1bag";
+  bool recurringPickup = false;
 
-  void _previousMonth() {
+  final List<String> _wasteTypes = ["Plastic", "Metal", "Paper", "Glass"];
+  final ScheduleController _scheduleController = ScheduleController();
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     setState(() {
-      currentDisplayMonth = DateTime(
-        currentDisplayMonth.year,
-        currentDisplayMonth.month - 1,
-      );
+      selectedDate = selectedDay;
+      focusedDate = focusedDay;
     });
   }
 
-  void _nextMonth() {
-    setState(() {
-      currentDisplayMonth = DateTime(
-        currentDisplayMonth.year,
-        currentDisplayMonth.month + 1,
+  Future<void> _schedulePickup() async {
+    try {
+      final weightValue = double.tryParse(
+            estimatedWeight.replaceAll(RegExp(r'[^0-9.]'), ''),
+          ) ?? 0.0;
+
+      await _scheduleController.createNewSchedule(
+        userId: "1",
+        date: selectedDate.toIso8601String(),
+        wasteTypes: selectedWasteTypes,
+        estimateWeight: weightValue,
+        recurring: recurringPickup,
       );
-    });
-  }
 
-  void _showMonthYearPicker() async {
-    final DateTime? picked = await showDialog<DateTime>(
-      context: context,
-      builder: (BuildContext context) {
-        return _buildMonthYearPicker();
-      },
-    );
-
-    if (picked != null) {
-      setState(() {
-        currentDisplayMonth = picked;
-      });
-    }
-  }
-
-  Widget _buildMonthYearPicker() {
-    int selectedYear = currentDisplayMonth.year;
-    int selectedMonth = currentDisplayMonth.month;
-    
-    return AlertDialog(
-      title: Text('Select Month and Year'),
-      content: Container(
-        width: double.maxFinite,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Year picker
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                    setState(() {
-                      selectedYear--;
-                    });
-                  },
-                ),
-                GestureDetector(
-                  onTap: () {
-                    // Show year picker
-                    showDialog(
-                      context: context,
-                      builder: (context) => _buildYearPicker(selectedYear),
-                    );
-                  },
-                  child: Text(
-                    '$selectedYear',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.arrow_forward_ios),
-                  onPressed: () {
-                    setState(() {
-                      selectedYear++;
-                    });
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            // Month grid
-            GridView.count(
-              crossAxisCount: 3,
-              shrinkWrap: true,
-              children: List.generate(12, (index) {
-                final monthNames = [
-                  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-                ];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop(DateTime(selectedYear, index + 1));
-                  },
-                  child: Container(
-                    margin: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: selectedMonth == index + 1 ? Colors.green.withOpacity(0.2) : null,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: selectedMonth == index + 1 ? Colors.green : Colors.grey.shade300,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        monthNames[index],
-                        style: TextStyle(
-                          color: selectedMonth == index + 1 ? Colors.green : null,
-                          fontWeight: selectedMonth == index + 1 ? FontWeight.bold : null,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text('Cancel'),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildYearPicker(int initialYear) {
-    int startYear = initialYear - 5;
-    
-    return AlertDialog(
-      title: Text('Select Year'),
-      content: Container(
-        width: double.maxFinite,
-        height: 300,
-        child: ListView.builder(
-          itemCount: 11, // 5 years before and after current year
-          itemBuilder: (context, index) {
-            final year = startYear + index;
-            return ListTile(
-              title: Center(child: Text('$year')),
-              selected: year == initialYear,
-              selectedTileColor: Colors.green.withOpacity(0.2),
-              onTap: () {
-                Navigator.of(context).pop(DateTime(year, currentDisplayMonth.month));
-              },
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  // Generate calendar days
-  List<Widget> _buildCalendarDays() {
-    final daysInMonth = DateTime(currentDisplayMonth.year, currentDisplayMonth.month + 1, 0).day;
-    final firstDayOfMonth = DateTime(currentDisplayMonth.year, currentDisplayMonth.month, 1);
-    final dayOfWeek = firstDayOfMonth.weekday % 7; // 0 is Sunday in our display
-    
-    List<Widget> days = [];
-    
-    // Add day headers
-    final dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    for (var name in dayNames) {
-      days.add(
-        Container(
-          height: 30,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Text(
-            name,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-          ),
-        ),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Pickup scheduled successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to schedule pickup: $e')),
       );
     }
-    
-    // Add empty cells for days before the 1st of the month
-    for (var i = 0; i < dayOfWeek; i++) {
-      days.add(
-        Container(
-          height: 40,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-        ),
-      );
-    }
-    
-    // Add days of the month
-    for (var i = 1; i <= daysInMonth; i++) {
-      final currentDate = DateTime(currentDisplayMonth.year, currentDisplayMonth.month, i);
-      final isSelected = selectedDate != null && 
-                         selectedDate!.year == currentDate.year && 
-                         selectedDate!.month == currentDate.month && 
-                         selectedDate!.day == currentDate.day;
-      
-      days.add(
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              selectedDate = currentDate;
-            });
-          },
-          child: Container(
-            height: 40,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              color: isSelected ? Colors.green.withOpacity(0.2) : null,
-            ),
-            child: Text(
-              '$i',
-              style: TextStyle(
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    
-    return days;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Format the month and year for display
-    final formattedMonthYear = '${currentDisplayMonth.month}/${currentDisplayMonth.year}';
-        
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          'Schedule Pickup', 
+        title: Text(
+          "Schedule Pickup",
           style: TextStyle(
-            color: Colors.green,
+            color: Colors.black,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.green, size: 20),
-          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back, color: Colors.green),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Month and Year with navigation
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back_ios, size: 16),
-                    onPressed: _previousMonth,
-                    color: Colors.green,
-                  ),
-                  GestureDetector(
-                    onTap: _showMonthYearPicker,
-                    child: Text(
-                      formattedMonthYear,
-                      style: TextStyle(
-                        fontSize: 20, 
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: _nextMonth,
-                    color: Colors.green,
-                  ),
-                ],
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Calendar Section
+            _buildSectionTitle("MARCH 2025"),
+            SizedBox(height: 10),
+            TableCalendar(
+              firstDay: DateTime(2000),
+              lastDay: DateTime(2101),
+              focusedDay: focusedDate,
+              selectedDayPredicate: (day) => isSameDay(selectedDate, day),
+              onDaySelected: _onDaySelected,
+              calendarFormat: CalendarFormat.month,
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
+                titleCentered: true,
+                titleTextStyle: TextStyle(fontSize: 0), // Hide default title
               ),
-              const SizedBox(height: 16),
-              
-              // Calendar Grid
-              GridView.count(
-                crossAxisCount: 7,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                children: _buildCalendarDays(),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                weekdayStyle: TextStyle(color: Colors.black),
+                weekendStyle: TextStyle(color: Colors.black),
               ),
-              
-              const SizedBox(height: 24),
-              
-              // Time Section
-              Text(
-                'Time',
+              calendarStyle: CalendarStyle(
+                selectedDecoration: BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                todayDecoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+
+            // Time Section
+            _buildSectionTitle("Time"),
+            SizedBox(height: 10),
+            _buildTimeContainer("Time not set (all day)", Icons.access_time),
+            SizedBox(height: 20),
+
+            // Waste Type Section
+            _buildSectionTitle("Waste Type"),
+            SizedBox(height: 10),
+            Wrap(
+              spacing: 10,
+              children: _wasteTypes.map((type) {
+                bool isSelected = selectedWasteTypes.contains(type);
+                return ChoiceChip(
+                  label: Text(type),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    setState(() {
+                      if (selected) {
+                        selectedWasteTypes.add(type);
+                      } else {
+                        selectedWasteTypes.remove(type);
+                      }
+                    });
+                  },
+                  selectedColor: Colors.green[100],
+                  backgroundColor: Colors.grey[200],
+                  labelStyle: TextStyle(
+                    color: isSelected ? Colors.green : Colors.black,
+                  ),
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 20),
+
+            // Estimate Weight/Volume Section
+            _buildSectionTitle("Estimate weight/volume"),
+            SizedBox(height: 10),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                hintText: "5kg/1bag",
+              ),
+              onChanged: (value) {
+                setState(() {
+                  estimatedWeight = value;
+                });
+              },
+            ),
+            SizedBox(height: 20),
+
+            // Recurring Pickup Section
+            _buildSectionTitle("Recurring Pickup"),
+            SizedBox(height: 10),
+            SwitchListTile(
+              title: Text(""),
+              value: recurringPickup,
+              onChanged: (value) {
+                setState(() {
+                  recurringPickup = value;
+                });
+              },
+              activeColor: Colors.green,
+              secondary: Icon(Icons.refresh, color: Colors.green),
+            ),
+            SizedBox(height: 20),
+
+            // History Button
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => ScheduledPickupsPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[300],
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Text(
+                "History",
                 style: TextStyle(
-                  fontSize: 18, 
-                  fontWeight: FontWeight.bold, 
-                  color: Colors.green
+                  color: Colors.black,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              GestureDetector(
-                onTap: _pickTime,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  decoration: const BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.grey)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        selectedTime == null ? 'Time not set (all day)' : selectedTime!.format(context),
-                        style: TextStyle(color: Colors.grey.shade600),
-                      ),
-                      Icon(Icons.access_time_rounded, color: Colors.green),
-                    ],
-                  ),
+            ),
+            SizedBox(height: 10),
+
+            // Schedule Pickup Button
+            ElevatedButton(
+              onPressed: _schedulePickup,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              
-              const SizedBox(height: 24),
-              
-              // Waste Type Section
-              Text(
-                'Waste Type',
+              child: Text(
+                "Schedule Pickup",
                 style: TextStyle(
-                  fontSize: 18, 
-                  fontWeight: FontWeight.bold, 
-                  color: Colors.green
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 8),
-              Row(
-                children: ['Plastic', 'Metal', 'Paper', 'Glass'].map((type) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: ChoiceChip(
-                      label: Text(type),
-                      selected: selectedWasteType == type,
-                      selectedColor: Colors.green.withOpacity(0.2),
-                      labelStyle: TextStyle(
-                        color: selectedWasteType == type ? Colors.green : Colors.black,
-                      ),
-                      onSelected: (selected) {
-                        setState(() {
-                          selectedWasteType = type;
-                        });
-                      },
-                    ),
-                  );
-                }).toList(),
-              ),
-              
-              const SizedBox(height: 24),
-              
-              // Estimate weight/volume
-              Text(
-                'Estimate weight/volume',
-                style: TextStyle(
-                  fontSize: 18, 
-                  fontWeight: FontWeight.bold, 
-                  color: Colors.green
-                ),
-              ),
-              TextField(
-                controller: weightController,
-                decoration: InputDecoration(
-                  border: UnderlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(vertical: 12),
-                ),
-              ),
-              
-              const SizedBox(height: 24),
-              
-              // Recurring Pickup
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Recurring Pickup',
-                    style: TextStyle(
-                      fontSize: 18, 
-                      fontWeight: FontWeight.bold, 
-                      color: Colors.green
-                    ),
-                  ),
-                  Switch(
-                    value: isRecurring,
-                    onChanged: (value) {
-                      setState(() {
-                        isRecurring = value;
-                        
-                      });
-                    },
-                    activeColor: Colors.green,
-                    activeTrackColor: Colors.green.withOpacity(0.5),
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 40),
-              
-              // History Button
-              Align(
-              alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF3A6A47),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ScheduledPickupsPage()),
-                  );
-                },
-                child: Text('History', style: TextStyle(color: Colors.white)),
-              ),
-),
-              
-              const SizedBox(height: 16),
-              
-              // Schedule Pickup Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF3A6A47),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    'Schedule Pickup', 
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
-}
 
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    );
+  }
+
+  Widget _buildTimeContainer(String text, IconData icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(text, style: TextStyle(fontSize: 16, color: Colors.black)),
+          Icon(icon, color: Colors.green),
+        ],
+      ),
+    );
+  }
+}
