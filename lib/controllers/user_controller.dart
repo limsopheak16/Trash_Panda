@@ -1,7 +1,6 @@
 import 'package:trash_panda/bloc/user_bloc.dart';
 import 'package:trash_panda/models/user_model.dart';
 import 'package:trash_panda/services/api_service.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserController {
   final ApiService _apiService = ApiService();
