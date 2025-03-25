@@ -1,27 +1,22 @@
-class CancelPickupModel {
+class HistoryPickupModel {
   final int pickupId;
+  final String date;
   final String status;
-  final String message;
+  final List<String> wasteTypes;
 
-  CancelPickupModel({
+  HistoryPickupModel({
     required this.pickupId,
+    required this.date,
     required this.status,
-    required this.message,
+    required this.wasteTypes,
   });
+factory HistoryPickupModel.fromJson(Map<String, dynamic> json) {
+  return HistoryPickupModel(
+    pickupId: json['pickupId'] ?? 0, 
+    date: json['date'] ?? "", 
+    status: json['status'] ?? "",
+    wasteTypes: (json['wasteTypes'] as List?)?.map((e) => e.toString()).toList() ?? [],
+  );
+}
 
-  factory CancelPickupModel.fromJson(Map<String, dynamic> json) {
-    return CancelPickupModel(
-      pickupId: json['pickupId'],
-      status: json['status'],
-      message: json['message'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'pickupId': pickupId,
-      'status': status,
-      'message': message,
-    };
-  }
 }

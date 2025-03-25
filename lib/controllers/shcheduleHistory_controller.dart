@@ -1,3 +1,4 @@
+import 'package:trash_panda/models/cancelPickup_model.dart';
 import 'package:trash_panda/models/scheduledHistory_model.dart';
 import 'package:trash_panda/services/api_service.dart';
 
@@ -15,4 +16,10 @@ class ScheduleHistoryController {
       return []; // Return an empty list in case of error
     }
   }
+
+  Future<Future<List<HistoryPickupModel>>> deleteHistoryPickup(int pickupId) async {
+    return _apiService.deleteHistoryPickup(pickupId);
+
+  }
+
 }
