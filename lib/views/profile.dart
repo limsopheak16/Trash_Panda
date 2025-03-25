@@ -22,12 +22,12 @@ class Profile extends StatelessWidget {
             return Column(
               children: [
                 const SizedBox(height: 50),
-                _buildTopIcons(),
+                _buildTopIcons(context),
                 _buildHeader(profile.userName, profile.email, profile.profileImageUrl),
                 const SizedBox(height: 40),
                 _buildStats(),
                 const SizedBox(height: 40),
-                _buildOptions(),
+                _buildOptions(context),
                 const Spacer(),
               ],
             );
@@ -37,17 +37,17 @@ class Profile extends StatelessWidget {
     );
   }
 
-  Widget _buildTopIcons() {
+  Widget _buildTopIcons(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          CircleAvatar(
-            backgroundColor: Colors.green.shade100,
-            radius: 25,
-            child: GestureDetector(
-              onTap: () {},
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, '/editProfile'),
+            child: CircleAvatar(
+              backgroundColor: Colors.green.shade100,
+              radius: 25,
               child: Image.asset('assets/icons/edit.png', width: 28, height: 28),
             ),
           ),
@@ -57,8 +57,31 @@ class Profile extends StatelessWidget {
             radius: 25,
             child: IconButton(
               icon: const Icon(Icons.logout, color: Colors.redAccent, size: 28),
-              onPressed: () {},
+              onPressed: () => _showLogoutDialog(context),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Logout"),
+        content: const Text("Are you sure you want to logout?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+            child: const Text("Logout", style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -108,22 +131,25 @@ class Profile extends StatelessWidget {
     );
   }
 
-  Widget _buildOptions() {
+  Widget _buildOptions(BuildContext context) {
     return Column(
       children: [
-        _optionItem(Icons.person, 'Username', '@pheak_panda'),
-        _optionItem(Icons.notifications, 'Notification', 'Mute, Push, Email'),
-        _optionItem(Icons.settings, 'Setting', 'Security, Privacy'),
+        _optionItem(context, Icons.person, 'Username', '@pheak_panda', '/editProfile'),
+        _optionItem(context, Icons.notifications, 'Notification', 'Mute, Push, Email', '/notifications'),
+        _optionItem(context, Icons.settings, 'Setting', 'Security, Privacy', '/settings'),
       ],
     );
   }
 
-  Widget _optionItem(IconData icon, String title, String subtitle) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.green, size: 30),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-      subtitle: Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 16)),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 20),
+  Widget _optionItem(BuildContext context, IconData icon, String title, String subtitle, String route) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, route),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.green, size: 30),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+        subtitle: Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 16)),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 20, color: Colors.green),
+      ),
     );
   }
 }
