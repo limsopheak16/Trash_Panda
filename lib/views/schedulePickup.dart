@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trash_panda/controllers/pickup_controller.dart';
 import 'package:trash_panda/views/history.dart';
-import 'package:table_calendar/table_calendar.dart'; // Add this for the calendar
+import 'package:table_calendar/table_calendar.dart';
 
 class SchedulePickupScreen extends StatefulWidget {
   @override
@@ -9,11 +9,12 @@ class SchedulePickupScreen extends StatefulWidget {
 }
 
 class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
-  DateTime selectedDate = DateTime.now();
+  DateTime? selectedDate;
   DateTime focusedDate = DateTime.now();
   List<String> selectedWasteTypes = [];
-  String estimatedWeight = "5kg/1bag";
+  String estimatedWeight = "";
   bool recurringPickup = false;
+  bool showErrors = false;
 
   final List<String> _wasteTypes = ["Plastic", "Metal", "Paper", "Glass"];
   final ScheduleController _scheduleController = ScheduleController();
@@ -22,18 +23,27 @@ class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
     setState(() {
       selectedDate = selectedDay;
       focusedDate = focusedDay;
+      showErrors = false; // Hide errors when user selects a date
     });
   }
 
   Future<void> _schedulePickup() async {
+    setState(() {
+      showErrors = true; // Show errors if form is incomplete
+    });
+
+    if (selectedDate == null || selectedWasteTypes.isEmpty || estimatedWeight.isEmpty) {
+      return; // Stop if validation fails
+    }
+
     try {
       final weightValue = double.tryParse(
-            estimatedWeight.replaceAll(RegExp(r'[^0-9.]'), ''),
-          ) ?? 0.0;
+        estimatedWeight.replaceAll(RegExp(r'[^0-9.]'), ''),
+      ) ?? 0.0;
 
       await _scheduleController.createNewSchedule(
         userId: "1",
-        date: selectedDate.toIso8601String(),
+        date: selectedDate!.toIso8601String(),
         wasteTypes: selectedWasteTypes,
         estimateWeight: weightValue,
         recurring: recurringPickup,
@@ -75,8 +85,6 @@ class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Calendar Section
-            _buildSectionTitle("MARCH 2025"),
             SizedBox(height: 10),
             TableCalendar(
               firstDay: DateTime(2000),
@@ -84,11 +92,16 @@ class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
               focusedDay: focusedDate,
               selectedDayPredicate: (day) => isSameDay(selectedDate, day),
               onDaySelected: _onDaySelected,
+              onPageChanged: (date) {
+                setState(() {
+                  focusedDate = date;
+                });
+              },
               calendarFormat: CalendarFormat.month,
               headerStyle: HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
-                titleTextStyle: TextStyle(fontSize: 0), // Hide default title
+                titleTextStyle: TextStyle(fontSize: 16),
               ),
               daysOfWeekStyle: DaysOfWeekStyle(
                 weekdayStyle: TextStyle(color: Colors.black),
@@ -105,12 +118,11 @@ class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
-
-            // Time Section
-            _buildSectionTitle("Time"),
-            SizedBox(height: 10),
-            _buildTimeContainer("Time not set (all day)", Icons.access_time),
+            if (showErrors && selectedDate == null)
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Text("Please select a date.", style: TextStyle(color: Colors.red)),
+              ),
             SizedBox(height: 20),
 
             // Waste Type Section
@@ -130,6 +142,7 @@ class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
                       } else {
                         selectedWasteTypes.remove(type);
                       }
+                      showErrors = false; // Hide errors when user selects waste type
                     });
                   },
                   selectedColor: Colors.green[100],
@@ -140,6 +153,11 @@ class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
                 );
               }).toList(),
             ),
+            if (showErrors && selectedWasteTypes.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Text("Please select at least one waste type.", style: TextStyle(color: Colors.red)),
+              ),
             SizedBox(height: 20),
 
             // Estimate Weight/Volume Section
@@ -154,10 +172,12 @@ class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
                 filled: true,
                 fillColor: Colors.grey[200],
                 hintText: "5kg/1bag",
+                errorText: showErrors && estimatedWeight.isEmpty ? "Please enter an estimated weight." : null,
               ),
               onChanged: (value) {
                 setState(() {
                   estimatedWeight = value;
+                  showErrors = false; // Hide errors when user enters weight
                 });
               },
             ),
@@ -234,23 +254,6 @@ class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
     return Text(
       title,
       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-    );
-  }
-
-  Widget _buildTimeContainer(String text, IconData icon) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(text, style: TextStyle(fontSize: 16, color: Colors.black)),
-          Icon(icon, color: Colors.green),
-        ],
-      ),
     );
   }
 }
