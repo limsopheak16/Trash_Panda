@@ -5,6 +5,7 @@ import 'package:trash_panda/models/user_model.dart'; // Ensure this import exist
 import 'package:trash_panda/models/activity_model.dart'; // Ensure this import exists
 import 'package:trash_panda/services/storage_service.dart';
 import 'package:trash_panda/models/pickup_model.dart';
+import 'package:trash_panda/models/cancelPickup_model.dart';
 
 
 class ApiService {
@@ -162,8 +163,7 @@ class ApiService {
       return null;
     }
   }
-}
-Future<List<ScheduleModel>> createNewSchedule({
+  Future<List<ScheduleModel>> createNewSchedule({
     int limit = 20,
     required String userId,
     required String date,
@@ -210,5 +210,4 @@ Future<List<ScheduleModel>> createNewSchedule({
     }
   }
 }
-
 

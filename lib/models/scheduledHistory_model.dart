@@ -3,13 +3,15 @@ class ScheduledhistoryModel {
   final int pickupId;
   final String date;
   final String status;
-  final String wasteTypes; // Will store as a comma-separated string if API returns List
+  final String wasteTypes; 
+  final int estimateWeight;
 
   ScheduledhistoryModel({
     required this.pickupId,
     required this.date,
     required this.status,
     required this.wasteTypes,
+    required this.estimateWeight,
   });
 
   factory ScheduledhistoryModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class ScheduledhistoryModel {
       wasteTypes: json['wasteTypes'] is List
           ? (json['wasteTypes'] as List).join(', ') // Convert List to String
           : json['wasteTypes'] ?? '', // Keep as String if already String
+      estimateWeight: json['estimateWeight'] ?? 0,   
     );
   }
 
@@ -29,6 +32,7 @@ class ScheduledhistoryModel {
       'date': date,
       'status': status,
       'wasteTypes': wasteTypes, // Store as String
+      'estimateWeight': estimateWeight,
     };
   }
 }

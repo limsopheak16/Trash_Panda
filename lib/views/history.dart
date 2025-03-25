@@ -20,53 +20,7 @@ class ScheduledPickupsPage extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text(
-                  'Hello, Pheak',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Start your waste to be money',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF186235),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 25,
-                  height: 25,
-                  decoration: const BoxDecoration(shape: BoxShape.circle),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.asset(
-                      'assets/icons/bell.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    shape: BoxShape.circle,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(45),
-                    child: Image.asset(
-                      'assets/icons/panda.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+           
               ],
             ),
           ],
@@ -100,6 +54,7 @@ class ScheduledPickupsPage extends StatelessWidget {
                   }
 
                   final scheduledHistory = snapshot.data!;
+                  print("------------ ${scheduledHistory[0].estimateWeight}");
 
                   return ListView.builder(
                     itemCount: scheduledHistory.length,
@@ -109,7 +64,7 @@ class ScheduledPickupsPage extends StatelessWidget {
                         date: pickup.date, // Adjust this for date
                         time: pickup.date, // Adjust this for time
                         materials: pickup.wasteTypes.split(','), // Assuming wasteTypes are comma-separated
-                        weight: 'N/A', // Adjust this if weight data is available
+                        estimateWeight: pickup.estimateWeight, // Adjust this if weight data is available
                         status: pickup.status,
                         statusColor: pickup.status == 'Scheduled' ? Colors.green : Colors.grey,
                         showCancelButton: pickup.status == 'Scheduled',
@@ -129,7 +84,7 @@ class ScheduledPickupsPage extends StatelessWidget {
     required String date,
     required String time,
     required List<String> materials,
-    required String weight,
+    required int estimateWeight,
     required String status,
     required Color statusColor,
     required bool showCancelButton,
@@ -209,7 +164,7 @@ class ScheduledPickupsPage extends StatelessWidget {
                   children: [
                     const Icon(Icons.scale, size: 16),
                     const SizedBox(width: 8),
-                    Text(weight, style: const TextStyle(fontSize: 14)),
+                    Text(estimateWeight.toString(), style: const TextStyle(fontSize: 14)),
                   ],
                 ),
                 const SizedBox(height: 8),
