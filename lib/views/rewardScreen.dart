@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trash_panda/views/home.dart';
 
 class RewardScreen extends StatelessWidget {
   const RewardScreen({Key? key}) : super(key: key);
@@ -13,14 +14,22 @@ class RewardScreen extends StatelessWidget {
           style: TextStyle(
             color: Colors.green,
             fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.green),
-          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back,                                 color: Color(0xFF058B09),
+),
+          onPressed: () {
+            // Navigate to the OtherPage when the button is clicked
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
+          },
         ),
       ),
       body: Padding(

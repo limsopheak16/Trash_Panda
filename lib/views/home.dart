@@ -8,6 +8,7 @@ import 'package:trash_panda/views/social.dart';
 import 'package:trash_panda/views/profile.dart';
 import 'package:trash_panda/controllers/point_controller.dart';
 import 'package:trash_panda/models/point_model.dart';
+import 'package:trash_panda/views/note.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -114,6 +115,15 @@ class _HomeContentState extends State<HomeContent> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                                GestureDetector(
+              onTap: () {
+                // Navigate to the other page when the container is clicked
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyApp()),
+                );
+              },
+              child:
                               Container(
                                 width: 25,
                                 height: 25,
@@ -127,6 +137,7 @@ class _HomeContentState extends State<HomeContent> {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
+                              ),
                               ),
                               const SizedBox(width: 8),
                               Container(
