@@ -66,7 +66,7 @@ class _SchedulePickupScreenState extends State<SchedulePickupScreen> {
         title: Text(
           "Schedule Pickup",
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.green,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
