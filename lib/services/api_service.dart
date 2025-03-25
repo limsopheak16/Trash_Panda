@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:trash_panda/models/scheduledHistory_model.dart';
 import 'package:trash_panda/models/user_model.dart'; // Ensure this import exists
@@ -139,28 +140,48 @@ class ApiService {
     }
   }
    // Cancel Pickup API
-  Future<CancelPickupModel?> cancelPickup(int pickupId) async {
-    try {
-      final token = await _storageService.getToken();
-      if (token == null) throw Exception('Token not found');
+ Future<List<HistoryPickupModel>> deleteHistoryPickup(int pickupId) async {
+    final token = await _storageService.getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
 
+    try {
       final response = await http.delete(
         Uri.parse('$baseUrl/api/pickup/cancel/$pickupId'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
+        headers: {'Authorization': 'Bearer $token'},
       );
 
       if (response.statusCode == 200) {
-        return CancelPickupModel.fromJson(jsonDecode(response.body));
+        if (response.body.isNotEmpty) {
+          final jsonData = json.decode(response.body);
+
+          if (jsonData is Map<String, dynamic>) {
+            print("API Response: $jsonData"); // Debugging
+
+            if (jsonData.containsKey("message")) {
+              print("Pickup canceled: ${jsonData["message"]}");
+            }
+
+            return [];
+          }
+
+          if (jsonData is List) {
+            return jsonData
+                .map((item) => HistoryPickupModel.fromJson(item))
+                .toList();
+          }
+        }
+        return [];
       } else {
-        print("Failed to cancel pickup: ${response.body}");
-        return null;
+        print("Error fetching data: ${response.statusCode}");
+        throw Exception('Failed to delete pickup: ${response.statusCode}');
       }
     } catch (e) {
-      print("Cancel pickup error: $e");
-      return null;
+      if (kDebugMode) {
+        print("API Error: $e");
+      }
+      throw Exception('Failed to delete pickup: $e');
     }
   }
   Future<List<ScheduleModel>> createNewSchedule({
