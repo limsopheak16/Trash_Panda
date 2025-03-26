@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trash_panda/controllers/profile_controller.dart';
 
 class Profile extends StatelessWidget {
@@ -77,7 +78,9 @@ class Profile extends StatelessWidget {
             child: const Text("Cancel"),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('token');
               Navigator.pop(context);
               Navigator.pushReplacementNamed(context, '/login');
             },
