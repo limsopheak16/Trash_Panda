@@ -6,10 +6,10 @@ class ScheduleHistoryController {
   final ApiService _apiService = ApiService();
 
   Future<List<ScheduledhistoryModel>> fetchScheduledHistory() async {
-    print("Fetching scheduled history in controller........"); // Print a message when fetching data
+    // print("Fetching scheduled history in controller........"); // Print a message when fetching data
     try {
       final data = await _apiService.fetchScheduledHistory();
-      print("Fetched data in controller: $data"); // Print fetched data in controller
+      // print("Fetched data in controller: $data"); // Print fetched data in controller
       return data;
     } catch (error) {
       print("Error fetching scheduled history in controller: $error");
