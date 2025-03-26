@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trash_panda/views/home.dart';
 import 'package:trash_panda/views/register.dart';
 import 'package:trash_panda/controllers/user_controller.dart';
@@ -16,6 +17,24 @@ class _LoginScreenState extends State<Login> {
   final UserController _userController = UserController();
   bool _isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _checkToken();
+  }
+
+  void _checkToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    }
+  }
+
   void _login() async {
     setState(() {
       _isLoading = true;
@@ -30,6 +49,9 @@ class _LoginScreenState extends State<Login> {
     });
 
     if (user != null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', user.token ?? '');
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
@@ -133,50 +155,53 @@ class _LoginScreenState extends State<Login> {
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 30),
-                      child: TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Forgot Password',
-                          style: TextStyle(color: Colors.green, fontSize: 18),
-                        ),
-                      ),
                     ),
                   ),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
+                      onPressed: _isLoading ? null : _login,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF416944),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24)),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
-                      onPressed: _isLoading ? null : _login,
                       child: _isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text('Login',
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white)),
+                          : const Text(
+                              'Login',
+                              style: TextStyle(fontSize: 20, color: Colors.white),
+                            ),
                     ),
                   ),
-                  const SizedBox(height: 30),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: GestureDetector(
-                        onTap: () {
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Don't have an account? ",
+                      style: TextStyle(fontSize: 18)),
+
+                      TextButton(
+                        onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignUp()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignUp(),
+                            ),
+                          );
                         },
-                        child: const Text("Don’t have an account? Sign up",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                color: Color(0xFF6FAD67),
-                                fontSize: 18)),
+                        child: const Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            color: Color(0xFF058B09),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
@@ -187,4 +212,3 @@ class _LoginScreenState extends State<Login> {
     );
   }
 }
-
