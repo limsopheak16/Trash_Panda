@@ -7,6 +7,7 @@ import 'package:trash_panda/models/activity_model.dart'; // Ensure this import e
 import 'package:trash_panda/services/storage_service.dart';
 import 'package:trash_panda/models/pickup_model.dart';
 import 'package:trash_panda/models/cancelPickup_model.dart';
+import 'package:trash_panda/models/reward_model.dart';
 
 
 class ApiService {
@@ -127,7 +128,7 @@ class ApiService {
         List<dynamic> data = jsonDecode(response.body);
 
         // Debugging: Print raw API response
-        print("Fetched Scheduled History: $data");
+        // print("Fetched Scheduled History: $data");
 
         return data.map((json) => ScheduledhistoryModel.fromJson(json)).toList();
       } else {
@@ -228,6 +229,35 @@ class ApiService {
       }
     } else {
       throw Exception('Failed to create schedule');
+    }
+  }
+  // Fetch Rewards
+    Future<List<RewardModel>> fetchRewards({int limit = 20}) async {
+    try {
+      final token = await _storageService.getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
+
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/reward/listReward?limit=$limit'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+
+        // Debugging: Print raw API response
+        print("Fetched Rewards: $data");
+
+        return data.map((json) => RewardModel.fromJson(json)).toList();
+      } else {
+        print("Failed to fetch Rewards: ${response.body}");
+        return [];
+      }
+    } catch (e) {
+      print("Rewards fetch error: $e");
+      return [];
     }
   }
 }

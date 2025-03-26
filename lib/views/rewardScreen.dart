@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:trash_panda/controllers/rewards_controller.dart';
+import 'package:trash_panda/models/reward_model.dart';
 import 'package:trash_panda/views/home.dart';
 
-class RewardScreen extends StatelessWidget {
+class RewardScreen extends StatefulWidget {
   const RewardScreen({Key? key}) : super(key: key);
+
+  @override
+  _RewardScreenState createState() => _RewardScreenState();
+}
+
+class _RewardScreenState extends State<RewardScreen> {
+  final ScheduleHistoryController _controller = ScheduleHistoryController();
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +30,8 @@ class RewardScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,                                 color: Color(0xFF058B09),
-),
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF058B09)),
           onPressed: () {
-            // Navigate to the OtherPage when the button is clicked
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => HomePage()),
@@ -42,7 +49,6 @@ class RewardScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 24.0),
               decoration: BoxDecoration(
                 color: Color(0xFF80AF81),
-// Light green color
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -86,39 +92,38 @@ class RewardScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            // Rewards Grid
+            // Fetch and Display Rewards
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.8,
-                children: [
-                  _buildRewardCard(
-                    icon: Icons.attach_money,
-                    title: 'Cash Voucher',
-                    value: '10\$',
-                    points: '100 point',
-                  ),
-                  _buildRewardCard(
-                    icon: Icons.shopping_bag_outlined,
-                    title: 'Shopping Discount',
-                    value: '20% OFF',
-                    points: '1000 points',
-                  ),
-                  _buildRewardCard(
-                    icon: Icons.local_shipping_outlined,
-                    title: 'Free Pickup',
-                    value: '1 Service',
-                    points: '250 points',
-                  ),
-                  _buildRewardCard(
-                    icon: Icons.public,
-                    title: 'Eco-Friendly',
-                    value: 'Gift Box',
-                    points: '750 points',
-                  ),
-                ],
+              child: FutureBuilder<List<RewardModel>>(
+                future: _controller.fetchRewards(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text("Error: ${snapshot.error}"));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text("No rewards available"));
+                  }
+
+                  // Display Rewards in Grid
+                  return GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 0.8,
+                    ),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final reward = snapshot.data![index];
+                      return _buildRewardCard(
+                        title: reward.title,
+                        description: reward.description,
+                        points: "${reward.exchangePoint} points",
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
@@ -128,9 +133,8 @@ class RewardScreen extends StatelessWidget {
   }
 
   Widget _buildRewardCard({
-    required IconData icon,
     required String title,
-    required String value,
+    required String description,
     required String points,
   }) {
     return Container(
@@ -142,20 +146,6 @@ class RewardScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: Colors.green,
-              size: 24,
-            ),
-          ),
-          const SizedBox(height: 8),
           Text(
             title,
             style: const TextStyle(
@@ -165,21 +155,22 @@ class RewardScreen extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
+          const SizedBox(height: 8),
           Text(
-            value,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.green,
+            description,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[600],
             ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 2),
           Text(
             points,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
-              color: Colors.grey[600],
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
             ),
             textAlign: TextAlign.center,
           ),
@@ -206,4 +197,3 @@ class RewardScreen extends StatelessWidget {
     );
   }
 }
-
